@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Círculo vinculado ao ângulo</title>
+    <style>
+        /* Camada base */
+        @layer base {
+            * {
+                box-sizing: border-box;
+                margin: 0;
+            }
+
+            html {
+                block-size: 100%;
+                color-scheme: dark light;
+            }
+
+            body {
+                min-block-size: 100%;
+                font-family: system-ui, sans-serif;
+
+                display: grid;
+                place-content: center;
+                gap: 5vmin;
+            }
+        }
+
+        /* Camada de Demonstração */
+        @layer demo {
+            #pie {
+                --ng: 120deg;
+                /* pode ser definido via controle deslizante */
+                --thickness: 3px;
+                --_inner: calc(70% - var(--thickness));
+                --_outer: calc(var(--_inner) + 1px);
+
+                /* corrige aliasing */
+
+                /* esconde a parte interna do gradiente cônico */
+                mask: radial-gradient(circle, #0000 var(--_inner), #000 var(--_outer));
+
+                /* o gradiente cônico, transparente após --ng */
+                background-image: conic-gradient(rgb(221, 119, 36), rgb(11, 103, 126) var(--ng), #970d0d00 0);
+
+                aspect-ratio: 1;
+                inline-size: 50vmin;
+                border-radius: 50%;
+            }
+        }
+
+        /* Camada de suporte de demonstração */
+        @layer demo.support {
+            .chart {
+                display: grid;
+                place-items: center;
+            }
+
+            .chart>* {
+                grid-area: 1/1;
+            }
+
+            .chart>h3 {
+                font-variant-numeric: tabular-nums;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chart">
+        <div id="pie"></div>
+        <h3><span id="ngval">120</span></h3>
+    </div>
+    <input type="range" max="360" value="120" id="ng"></input>
+    <script>
+
+        // Seleciona o elemento de entrada com o ID "ng"
+        const ngInput = document.getElementById('ng');
+
+        // Seleciona o elemento com a classe "pie"
+        const pie = document.querySelector('#pie');
+
+        // Seleciona o elemento com o ID "ngval"
+        const ngval = document.getElementById('ngval');
+
+        // Adiciona um ouvinte de evento de entrada ao elemento de entrada "ngInput"
+        ngInput.addEventListener('input', function (e) {
+            // Define a propriedade CSS '--ng' do elemento "pie" com o valor do ângulo em graus
+            pie.style.setProperty('--ng', e.target.value + 'deg');
+
+            // Define o conteúdo do elemento "ngval" com o valor do ângulo em graus
+            ngval.textContent = e.target.value;
+        });
+
+    </script>
+</body>
+
+</html>
